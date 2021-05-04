@@ -1,0 +1,40 @@
+- hosts: localhost
+  vars_files:
+    - credentials.yml
+  tasks:
+          #- name: Download Packages from internet
+          #include_tasks: "downloadPackages.yml"
+              
+    - name: Running EC2 Role
+      include_role:
+        name: ec2
+
+- hosts: namenode
+  tasks:
+    - name: Running Hadoop Master Role
+      include_role:
+        name: namenode
+
+- hosts: datanode
+  tasks:
+    - name: Running Hadoop Slave Role
+      include_role:
+        name: datanode
+
+- hosts: jobnode
+  tasks:
+    - name: Running Hadoop Jobtracker Role
+      include_role:
+        name: jobtracker
+        
+- hosts: tasknode
+  tasks:
+    - name: Running Hadoop Tasktracker Role
+      include_role:
+        name: tasktracker
+
+- hosts: clientnode
+  tasks:
+    - name: Running Hadoop Client Role
+      include_role:
+        name: client

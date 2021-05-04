@@ -1,0 +1,45 @@
+---
+# tasks file for namenode
+- name: "Create directory for storing packages"
+  file:
+     path: /HadoopSoftwares
+     state: directory
+
+- name: "Download  JDK & Hadoop packages"
+  get_url:
+    url: "{{ item }}"
+    dest: /HadoopSoftwares/
+  loop: "{{ link }}"
+
+- name: "Installing JDK & Hadoop packages"
+  command: rpm -ivh /HadoopSoftwares/* --force
+  ignore_errors: yes
+
+- name: Configure core-site file 
+  copy:
+    src: "core-site.xml"
+    dest: "/etc/hadoop/core-site.xml"
+
+- name: Configure hdfs-site file 
+  template:
+    src: "hdfs-site.xml"
+    dest: "/etc/hadoop/hdfs-site.xml"
+    
+- name: Hadoop Namenode Format    
+  shell: "hadoop namenode -format"
+
+- name: Starting Namenode Service
+  shell: "hadoop-daemon.sh start namenode"
+  
+- name: Making Hadoop Daemon Service Permanent
+  lineinfile:
+    path: /etc/rc.d/rc.local
+    line: hadoop-daemon.sh start namenode
+    mode: '0755'
+- name: Check Status
+  command: jps
+  register: NameNodeStatus
+
+- name: Status
+  debug: 
+    var: NameNodeStatus.stdout_lines

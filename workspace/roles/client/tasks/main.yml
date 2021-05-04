@@ -1,0 +1,56 @@
+---
+# tasks file for client
+- name: "Create directory for storing packages"
+  file:
+     path: /HadoopSoftwares
+     state: directory
+- name: "Download  JDK & Hadoop packages"
+  get_url:
+    url: "{{ item }}"
+    dest: /HadoopSoftwares/
+  loop: "{{ link }}"
+
+- name: "Installing JDK & Hadoop packages"
+  command: rpm -ivh /HadoopSoftwares/* --force
+  ignore_errors: yes
+
+- name: Configure core-site file 
+  template:
+    src: "core-site.xml"
+    dest: "/etc/hadoop/core-site.xml"
+
+- name: Configure mapred-site file 
+  template:
+    src: "mapred-site.xml"
+    dest: "/etc/hadoop/mapred-site.xml"
+
+- name: "Download Hive"
+  get_url:
+    url: "{{ hive_link }}"
+    dest: /opt/
+
+- name: "Extract Hive"
+  unarchive:
+    src: /opt/apache-hive-0.13.1-bin.tar.gz
+    dest: /opt/apache-hive
+- name: "Set Path For Hive"
+  shell: export HIVE_HOME=/opt/apache-hive/;export PATH=/opt/apache-hive/bin/:PATH
+
+- name: "Set Permanent Path"
+  shell: echo -e "export HIVE_HOME=/opt/apache-hive/\\nexport PATH=/opt/apache-hive/bin/:$PATH" | cat >> /root/.bashrc
+
+- name: Check HDFS Cluster Status
+  command: hadoop dfsadmin -report
+  register: hdfs
+
+- name: HDFS Status
+  debug:
+    var: hdfs.stdout_lines
+
+- name: Check MR Cluster Status
+  command: hadoop job -list-active-trackers
+  register: MR
+
+- name: MR Status
+  debug:
+    var: MR.stdout_lines

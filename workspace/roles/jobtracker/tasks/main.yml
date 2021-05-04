@@ -1,0 +1,42 @@
+---
+# tasks file for jobtracker
+- name: "Create directory for storing packages"
+  file:
+     path: /HadoopSoftwares
+     state: directory
+- name: "Download  JDK & Hadoop packages"
+  get_url:
+    url: "{{ item }}"
+    dest: /HadoopSoftwares/
+  loop: "{{ link }}"
+
+- name: "Installing JDK & Hadoop packages"
+  command: rpm -ivh /HadoopSoftwares/* --force
+  ignore_errors: yes
+
+- name: Configure core-site file 
+  template:
+    src: "core-site.xml"
+    dest: "/etc/hadoop/core-site.xml"
+
+- name: Configure mapred-site file
+  template:
+    src: "mapred-site.xml"
+    dest: "/etc/hadoop/mapred-site.xml"
+
+- name: Starting jobtracker service
+  shell: "hadoop-daemon.sh start jobtracker"
+  
+- name: Making Hadoop Daemon Service Permanent
+  lineinfile:
+    path: /etc/rc.d/rc.local
+    line: hadoop-daemon.sh start jobtracker
+    mode: '0755'
+- name: Check Status
+  command: jps
+  register: JobTrackerStatus
+
+- name: Status
+  debug:
+    var: JobTrackerStatus.stdout_lines
+

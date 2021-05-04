@@ -1,0 +1,22 @@
+---
+# vars file for ec2
+instance_tag:
+        - Namenode
+        - Datanode1
+        - Datanode2
+        - Client
+        - Jobtracker
+        - Tasktracker1
+        - Tasktracker2
+       
+
+python_pkgs:
+        - boto
+        - boto3
+
+sg_name: hadoop_sg
+region_name: ap-south-1
+subnet_name: subnet-ef4512a3
+ami_id: ami-045e6fa7127ab1ac4
+keypair: awskey
+instance_flavour: t2.micro
