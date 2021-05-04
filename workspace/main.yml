@@ -2,9 +2,7 @@
   vars_files:
     - credentials.yml
   tasks:
-          #- name: Download Packages from internet
-          #include_tasks: "downloadPackages.yml"
-              
+                     
     - name: Running EC2 Role
       include_role:
         name: ec2
