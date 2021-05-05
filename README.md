@@ -25,6 +25,6 @@ Hadoop HDFS & MapReduce Multi Node Cluster Setup on AWS EC2 Instances using Ansi
 $ansible-playbook -v main.yml
 ```
                               
-#### Video Demo: https://ajna.com/ 
+#### Video Demo:  https://www.linkedin.com/posts/sheikh-aafaq-rashid-585803158_hadoop-ansible-ansibleautomates-activity-6795691931579011072-QVHO
 
 
